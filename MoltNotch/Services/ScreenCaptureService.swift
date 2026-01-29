@@ -3,7 +3,6 @@
 
 import AppKit
 import Foundation
-import os.log
 import ScreenCaptureKit
 
 enum ScreenCaptureService {
@@ -16,11 +15,46 @@ enum ScreenCaptureService {
         CGRequestScreenCaptureAccess()
     }
 
-    static func captureForTransmission(maxWidth: CGFloat = 1920, jpegQuality: CGFloat = 0.7) -> Data? {
-        guard hasPermission() else { return nil }
+    /// Captures the main display as a CGImage using ScreenCaptureKit.
+    static func captureMainDisplay() async -> CGImage? {
+        let permitted = hasPermission()
+        #if DEBUG
+        NSLog("[ScreenCapture] captureMainDisplay called. hasPermission=\(permitted)")
+        #endif
+        guard permitted else { return nil }
+        do {
+            let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
+            guard let display = content.displays.first else {
+                #if DEBUG
+                NSLog("[ScreenCapture] No displays found")
+                #endif
+                return nil
+            }
 
-        guard let cgImage = captureMainDisplaySync() else { return nil }
+            let filter = SCContentFilter(display: display, excludingWindows: [])
+            let config = SCStreamConfiguration()
+            config.width = display.width
+            config.height = display.height
+            config.showsCursor = false
 
+            let image = try await SCScreenshotManager.captureImage(
+                contentFilter: filter,
+                configuration: config
+            )
+            #if DEBUG
+            NSLog("[ScreenCapture] Capture succeeded: \(image.width)x\(image.height)")
+            #endif
+            return image
+        } catch {
+            #if DEBUG
+            NSLog("[ScreenCapture] Capture FAILED: \(error)")
+            #endif
+            return nil
+        }
+    }
+
+    /// Encodes a CGImage as JPEG data, downscaling if needed.
+    static func encodeForTransmission(_ cgImage: CGImage, maxWidth: CGFloat = 1920, jpegQuality: CGFloat = 0.7) -> Data? {
         var image = NSImage(cgImage: cgImage, size: NSSize(width: cgImage.width, height: cgImage.height))
 
         if CGFloat(cgImage.width) > maxWidth {
@@ -55,55 +89,17 @@ enum ScreenCaptureService {
         return jpegData
     }
 
-    static func captureAsBase64(maxWidth: CGFloat = 1920, jpegQuality: CGFloat = 0.7) -> String? {
-        debugLog("[ScreenCapture] captureAsBase64 called. hasPermission=\(hasPermission())")
-        guard let data = captureForTransmission(maxWidth: maxWidth, jpegQuality: jpegQuality) else {
-            debugLog("[ScreenCapture] captureForTransmission returned nil")
+    /// Captures, encodes, and returns JPEG data ready for transmission.
+    static func captureForTransmission(maxWidth: CGFloat = 1920, jpegQuality: CGFloat = 0.7) async -> Data? {
+        guard let cgImage = await captureMainDisplay() else { return nil }
+        return encodeForTransmission(cgImage, maxWidth: maxWidth, jpegQuality: jpegQuality)
+    }
+
+    /// Captures a screenshot and returns it as a base64-encoded JPEG string.
+    static func captureAsBase64(maxWidth: CGFloat = 1920, jpegQuality: CGFloat = 0.7) async -> String? {
+        guard let data = await captureForTransmission(maxWidth: maxWidth, jpegQuality: jpegQuality) else {
             return nil
         }
-        debugLog("[ScreenCapture] got data, size=\(data.count) bytes")
         return data.base64EncodedString()
-    }
-
-    private static let log = Logger(subsystem: "com.moltbot.MoltNotch", category: "ScreenCapture")
-
-    private static func debugLog(_ msg: String) {
-        #if DEBUG
-        log.debug("\(msg, privacy: .public)")
-        #endif
-    }
-
-    // MARK: - ScreenCaptureKit synchronous bridge
-
-    private static func captureMainDisplaySync() -> CGImage? {
-        let semaphore = DispatchSemaphore(value: 0)
-        var result: CGImage?
-
-        Task {
-            do {
-                let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
-                guard let display = content.displays.first else {
-                    semaphore.signal()
-                    return
-                }
-
-                let filter = SCContentFilter(display: display, excludingWindows: [])
-                let config = SCStreamConfiguration()
-                config.width = display.width
-                config.height = display.height
-                config.showsCursor = false
-
-                result = try await SCScreenshotManager.captureImage(
-                    contentFilter: filter,
-                    configuration: config
-                )
-            } catch {
-                result = nil
-            }
-            semaphore.signal()
-        }
-
-        semaphore.wait()
-        return result
     }
 }
