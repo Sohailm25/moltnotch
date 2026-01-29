@@ -1,4 +1,4 @@
-# MoltNotch — Agent Setup Guide
+# MoltNotch - Agent Setup Guide
 
 Instructions for AI coding assistants (Claude Code, Codex, etc.) working on this repo.
 
@@ -7,9 +7,9 @@ Instructions for AI coding assistants (Claude Code, Codex, etc.) working on this
 MoltNotch is a macOS notch assistant app. It opens a chat popup from the MacBook notch area, connected to a [MoltBot](https://github.com/moltbot/moltbot) gateway via WebSocket.
 
 **Three build targets:**
-- `MoltNotch` — The macOS app (SwiftUI + AppKit)
-- `MoltNotchCLI` — CLI tool (`moltnotch setup`, `moltnotch doctor`)
-- `MoltNotchTests` — Unit tests (56 tests)
+- `MoltNotch` - The macOS app (SwiftUI + AppKit)
+- `MoltNotchCLI` - CLI tool (`moltnotch setup`, `moltnotch doctor`)
+- `MoltNotchTests` - Unit tests (56 tests)
 
 ## Build & Test
 
@@ -39,30 +39,30 @@ xcodebuild test -project MoltNotch.xcodeproj -scheme MoltNotch -destination 'pla
 
 ```
 MoltNotch/
-  App/              — App entry point, AppDelegate
-  Models/           — Config.swift (TOML config model), data types
-  Services/         — GatewayConnection.swift (WebSocket client), SSHTunnel, ScreenCapture
-  Views/            — SwiftUI views (NotchPanel, ChatView, etc.)
-  Resources/        — Assets.xcassets, Info.plist
+  App/              - App entry point, AppDelegate
+  Models/           - Config.swift (TOML config model), data types
+  Services/         - GatewayConnection.swift (WebSocket client), SSHTunnel, ScreenCapture
+  Views/            - SwiftUI views (NotchPanel, ChatView, etc.)
+  Resources/        - Assets.xcassets, Info.plist
 
 MoltNotchCLI/
-  main.swift        — CLI entry point (setup wizard + doctor command)
+  main.swift        - CLI entry point (setup wizard + doctor command)
 
-MoltNotchTests/     — Unit tests
+MoltNotchTests/     - Unit tests
 
-project.yml         — XcodeGen project definition
-Package.resolved    — SPM dependency lock
+project.yml         - XcodeGen project definition
+Package.resolved    - SPM dependency lock
 ```
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `MoltNotch/Services/GatewayConnection.swift` | WebSocket client — connect handshake, challenge-response auth, device pairing, chat events |
+| `MoltNotch/Services/GatewayConnection.swift` | WebSocket client - connect handshake, challenge-response auth, device pairing, chat events |
 | `MoltNotch/Models/Config.swift` | `MoltNotchConfig` struct parsed from `~/.moltnotch.toml` |
 | `MoltNotch/Services/SSHTunnelService.swift` | Auto-establishes SSH tunnel on launch if `[tunnel]` configured |
 | `MoltNotchCLI/main.swift` | Setup wizard and doctor diagnostics |
-| `project.yml` | XcodeGen spec — targets, dependencies, build settings |
+| `project.yml` | XcodeGen spec - targets, dependencies, build settings |
 
 ## Architecture
 
@@ -84,7 +84,7 @@ The `token` field in `~/.moltnotch.toml` is sent as `auth.password` in the conne
 
 ## Configuration File
 
-`~/.moltnotch.toml` — created by `moltnotch setup`:
+`~/.moltnotch.toml` - created by `moltnotch setup`:
 
 ```toml
 [gateway]
@@ -97,7 +97,7 @@ reconnect-max-attempts = 10
 key = "space"
 modifiers = ["control"]
 
-# Optional — for remote gateways behind SSH
+# Optional - for remote gateways behind SSH
 [tunnel]
 host = "server-ip-or-hostname"
 user = "ssh-user"
@@ -143,7 +143,7 @@ Managed via Swift Package Manager (SPM), declared in `project.yml`:
 4. Build to verify
 
 ### Changing the connect handshake
-Edit `GatewayConnection.swift` — the `ConnectParams` struct and the `connect()` method. The gateway expects specific fields; check the MoltBot gateway protocol docs.
+Edit `GatewayConnection.swift` - the `ConnectParams` struct and the `connect()` method. The gateway expects specific fields; check the MoltBot gateway protocol docs.
 
 ### Modifying the setup wizard
-Edit `MoltNotchCLI/main.swift` — the `runSetup()` function. The wizard writes TOML directly as a string template.
+Edit `MoltNotchCLI/main.swift` - the `runSetup()` function. The wizard writes TOML directly as a string template.

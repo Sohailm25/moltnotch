@@ -34,7 +34,7 @@ class MoltNotchManager: ObservableObject {
     func startConnection() {
         guard let config = try? MoltNotchConfig.load() else {
             DispatchQueue.main.async { [weak self] in
-                self?.connectionState = .error("Config not found — run `moltnotch setup`")
+                self?.connectionState = .error("Config not found - run `moltnotch setup`")
             }
             return
         }
@@ -101,7 +101,7 @@ class MoltNotchManager: ObservableObject {
                     NSLog("[MoltNotchManager] Screen recording permission denied")
                     #endif
                     DispatchQueue.main.async {
-                        self?.markLastUserMessageError("Screen recording permission required — grant in System Settings → Privacy & Security → Screen Recording")
+                        self?.markLastUserMessageError("Screen recording permission required - grant in System Settings → Privacy & Security → Screen Recording")
                     }
                     return
                 }

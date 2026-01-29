@@ -208,7 +208,7 @@ func testTCPConnection(url urlString: String) -> Bool {
         print(green("✓") + " Gateway reachable at \(host):\(port)")
         return true
     } else {
-        print(yellow("⚠") + " Could not reach \(host):\(port) — gateway may not be running yet")
+        print(yellow("⚠") + " Could not reach \(host):\(port) - gateway may not be running yet")
         return false
     }
 }
@@ -245,7 +245,7 @@ func testWebSocketHandshake(url urlString: String, token: String) {
         print(yellow("⚠") + " WebSocket handshake timed out")
         task.cancel(with: .goingAway, reason: nil)
     } else if isOk {
-        print(green("✓") + " WebSocket handshake OK — gateway is responding")
+        print(green("✓") + " WebSocket handshake OK - gateway is responding")
     } else if let msg = resultMessage {
         print(yellow("⚠") + " WebSocket connected but: \(msg)")
     } else {
@@ -294,7 +294,7 @@ func runDoctor() {
         if let token = config.gateway.token, !token.isEmpty {
             print("  Auth token: \(green("set"))")
         } else {
-            print("  Auth token: \(yellow("not set")) — may be required by your gateway")
+            print("  Auth token: \(yellow("not set")) - may be required by your gateway")
         }
 
         let tcpOk = testTCPConnection(url: config.gateway.url)
@@ -357,7 +357,7 @@ func testSSHHost(host: String) {
 
 func printHelp() {
     print("")
-    print(bold("moltnotch") + " — MoltBot Notch Assistant CLI")
+    print(bold("moltnotch") + " - MoltBot Notch Assistant CLI")
     print("")
     print("Commands:")
     print("  \(cyan("setup"))    Interactive setup wizard")

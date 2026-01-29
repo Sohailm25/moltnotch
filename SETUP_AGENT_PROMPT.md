@@ -91,7 +91,7 @@ echo $CLAWDBOT_GATEWAY_TOKEN
 moltbot doctor --generate-gateway-token
 ```
 
-The token is at `gateway.auth.token` in the JSON config. Save it — you'll need it in Phase 2.
+The token is at `gateway.auth.token` in the JSON config. Save it - you'll need it in Phase 2.
 
 ---
 
@@ -184,7 +184,7 @@ MoltNotch needs two permissions. Open **System Settings → Privacy & Security**
 | **Accessibility** | Privacy & Security → Accessibility | Global hotkey (Ctrl+Space) |
 
 Steps:
-1. Launch MoltNotch — it will prompt for Screen Recording on first run
+1. Launch MoltNotch - it will prompt for Screen Recording on first run
 2. Grant it, then **quit and relaunch** (macOS requires restart after granting)
 3. For Accessibility, click `+` in the preference pane and add `MoltNotch.app`
 4. **Quit and relaunch** again
@@ -200,7 +200,7 @@ cp -R build/derived/Build/Products/Release/MoltNotch.app /Applications/
 open /Applications/MoltNotch.app
 ```
 
-MoltNotch is a **menu bar app** — look for the ✦ icon in the top-right of your screen. There is no dock icon or window.
+MoltNotch is a **menu bar app** - look for the ✦ icon in the top-right of your screen. There is no dock icon or window.
 
 ---
 
@@ -208,11 +208,11 @@ MoltNotch is a **menu bar app** — look for the ✦ icon in the top-right of yo
 
 Walk the user through this sequence:
 
-1. **Press Ctrl+Space** — the chat popup should emerge from the notch
-2. **Type "Hello"** and press Enter — you should see "Thinking..." then a streamed response
-3. **Press Tab** — a cyan 📷 icon should appear in the input field
-4. **Type "What's on my screen?"** and press Enter — the response should reference screen content
-5. **Press Escape** — popup should dismiss
+1. **Press Ctrl+Space** - the chat popup should emerge from the notch
+2. **Type "Hello"** and press Enter - you should see "Thinking..." then a streamed response
+3. **Press Tab** - a cyan 📷 icon should appear in the input field
+4. **Type "What's on my screen?"** and press Enter - the response should reference screen content
+5. **Press Escape** - popup should dismiss
 
 **If something fails:**
 
@@ -261,9 +261,9 @@ Walk the user through this sequence:
 ```
 
 Key paths:
-- `gateway.auth.token` — the credential MoltNotch needs
-- `gateway.port` — must match MoltNotch's gateway URL port
-- `gateway.auth.mode` — "token" (default) or "password"
+- `gateway.auth.token` - the credential MoltNotch needs
+- `gateway.port` - must match MoltNotch's gateway URL port
+- `gateway.auth.mode` - "token" (default) or "password"
 
 Legacy paths: `~/.clawdbot/moltbot.json` or `~/.clawdbot/clawdbot.json`
 

@@ -1,14 +1,14 @@
-# MoltNotch 🦞 — Chat with your Moltbot from the MacBook notch
+# MoltNotch 🦞 - Chat with your Moltbot from the MacBook notch
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-0078d7)](https://developer.apple.com/macos/)
 [![Swift 5.0](https://img.shields.io/badge/Swift-5.0-F05138)](https://swift.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-ffd60a)](LICENSE)
 
 <p align="center">
-  <img src="assets/demo.gif" alt="MoltNotch demo — chat from the MacBook notch" width="600" />
+  <img src="assets/demo.gif" alt="MoltNotch demo - chat from the MacBook notch" width="600" />
 </p>
 
-macOS notch assistant that plugs into your [MoltBot](https://github.com/moltbot/moltbot) (Clawdbot) gateway. Ctrl+Space opens a glass chat popup from the notch — ask questions, attach your screen as context, and pick up the conversation anywhere MoltBot runs.
+macOS notch assistant that plugs into your [MoltBot](https://github.com/moltbot/moltbot) (Clawdbot) gateway. Ctrl+Space opens a glass chat popup from the notch - ask questions, attach your screen as context, and pick up the conversation anywhere MoltBot runs.
 
 Runs as a menu bar app (✦ icon). No windows, no dock icon. Just a hotkey away.
 
@@ -40,7 +40,7 @@ moltnotch setup
 # 2. Launch the app
 open build/derived/Build/Products/Release/MoltNotch.app
 
-# 3. Press Ctrl+Space — that's it
+# 3. Press Ctrl+Space - that's it
 ```
 
 Your auth token lives in `~/.moltbot/moltbot.json` → `gateway.auth.token` on the gateway host. The setup wizard will ask for it.
@@ -69,7 +69,7 @@ System Settings → Privacy & Security → grant both → relaunch.
 
 ## Configuration
 
-`~/.moltnotch.toml` — created by `moltnotch setup`, or edit by hand:
+`~/.moltnotch.toml` - created by `moltnotch setup`, or edit by hand:
 
 ```toml
 [gateway]
@@ -82,7 +82,7 @@ reconnect-max-attempts = 10
 key = "space"
 modifiers = ["control"]
 
-# Optional — remote gateway behind SSH
+# Optional - remote gateway behind SSH
 [tunnel]
 host = "myserver.example.com"
 user = "username"
@@ -115,12 +115,12 @@ moltnotch doctor    # checks config, TCP, WebSocket, SSH
 | Symptom | Fix |
 |---------|-----|
 | "Not connected to gateway" | Start your MoltBot gateway, run `moltnotch doctor` |
-| Connects then disconnects | Wrong auth token — see [Finding Your Auth Token](#finding-your-auth-token) |
+| Connects then disconnects | Wrong auth token - see [Finding Your Auth Token](#finding-your-auth-token) |
 | Ctrl+Space doesn't work | Grant Accessibility permission, relaunch |
 | Screenshot sends fail | Grant Screen Recording permission, relaunch |
 | WebSocket fails after TCP passes | Upgrade to MoltBot gateway v0.8+ |
 | "Config not found" | Run `moltnotch setup` |
-| Can't find the app | It's a menu bar app — look for ✦ in the top-right |
+| Can't find the app | It's a menu bar app - look for ✦ in the top-right |
 
 ## Agent-Assisted Setup
 
@@ -140,4 +140,4 @@ The prompt covers both MoltBot gateway and MoltNotch client setup, with verifica
 
 ## License
 
-MIT — [Sohail Mohammad](https://github.com/Sohailm25)
+MIT - [Sohail Mohammad](https://github.com/Sohailm25)
