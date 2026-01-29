@@ -32,6 +32,7 @@
 		CEA813AAA8EBFB4A03DDDA7A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F4CE2346B2CB247791D952 /* Constants.swift */; };
 		D20AE065521268C96780B2F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98A9F1D5F962C82BC089B1B /* AppDelegate.swift */; };
 		D2916BA7771A8BA61FF5E6E8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D0B17292D8AD61F9EC5F2AA /* main.swift */; };
+		DAE94D646557AC486643AD2F /* ChatPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63726EB585040516E9585FF /* ChatPopup.swift */; };
 		DE08D94D32EF67FA79C47457 /* MoltNotchManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CD83744B5C7B8081FB06069 /* MoltNotchManager.swift */; };
 		DF271389B747D3C6C31F50AE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A2E51277E00F3033DA22356A /* MarkdownUI */; };
 		F8B17E12A5E0D7795A16B9AB /* GlassPopupStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4775B9A4A87D0CAC02C5842E /* GlassPopupStyle.swift */; };
@@ -74,6 +75,7 @@
 		BA1CBA15D6C01A6A5C59A5F6 /* ScreenCaptureService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureService.swift; sourceTree = "<group>"; };
 		BA57AD03D14CAF3F1D70DAF1 /* NotchPanelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchPanelManager.swift; sourceTree = "<group>"; };
 		C5828D5AF81C4864550E16A1 /* GatewayModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayModelsTests.swift; sourceTree = "<group>"; };
+		C63726EB585040516E9585FF /* ChatPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPopup.swift; sourceTree = "<group>"; };
 		CFAF45FC407CF1574AD68CED /* MoltNotch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoltNotch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0DEFF41424ABFDDD6BCCF40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E2C3317AD127B87E9C7DE55F /* MoltNotchManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoltNotchManagerTests.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 		95FCA2BCA4A4CA6100794385 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				C63726EB585040516E9585FF /* ChatPopup.swift */,
 				4775B9A4A87D0CAC02C5842E /* GlassPopupStyle.swift */,
 			);
 			path = Chat;
@@ -339,6 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D20AE065521268C96780B2F0 /* AppDelegate.swift in Sources */,
+				DAE94D646557AC486643AD2F /* ChatPopup.swift in Sources */,
 				B82FB6520A1EF136568C2CFA /* ChatSession.swift in Sources */,
 				2B7546C3C86EE2B443163FA9 /* Config.swift in Sources */,
 				68744508AB77FA1AD65AD2CD /* ConnectionManager.swift in Sources */,
