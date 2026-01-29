@@ -14,6 +14,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupNotchPanel()
         setupHotKey()
         checkConfigAndConnect()
+        requestScreenCaptureIfNeeded()
+    }
+
+    // MARK: - Screen Capture Permission
+
+    private func requestScreenCaptureIfNeeded() {
+        if !ScreenCaptureService.hasPermission() {
+            ScreenCaptureService.requestPermission()
+        }
     }
 
     // MARK: - Status Bar
