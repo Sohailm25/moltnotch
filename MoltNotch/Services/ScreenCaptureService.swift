@@ -3,6 +3,7 @@
 
 import AppKit
 import Foundation
+import os.log
 import ScreenCaptureKit
 
 enum ScreenCaptureService {
@@ -64,17 +65,12 @@ enum ScreenCaptureService {
         return data.base64EncodedString()
     }
 
+    private static let log = Logger(subsystem: "com.moltbot.MoltNotch", category: "ScreenCapture")
+
     private static func debugLog(_ msg: String) {
-        let line = "\(msg)\n"
-        if let data = line.data(using: .utf8) {
-            let fh = FileHandle(forWritingAtPath: "/tmp/barik-debug.log") ?? {
-                FileManager.default.createFile(atPath: "/tmp/barik-debug.log", contents: nil)
-                return FileHandle(forWritingAtPath: "/tmp/barik-debug.log")!
-            }()
-            fh.seekToEndOfFile()
-            fh.write(data)
-            fh.closeFile()
-        }
+        #if DEBUG
+        log.debug("\(msg, privacy: .public)")
+        #endif
     }
 
     // MARK: - ScreenCaptureKit synchronous bridge

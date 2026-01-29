@@ -120,6 +120,10 @@ func runSetup() {
 
     do {
         try toml.write(to: configPath, atomically: true, encoding: .utf8)
+        try FileManager.default.setAttributes(
+            [.posixPermissions: 0o600],
+            ofItemAtPath: configPath.path
+        )
         print("")
         print(green("✓") + " Config written to \(configPath.path)")
     } catch {

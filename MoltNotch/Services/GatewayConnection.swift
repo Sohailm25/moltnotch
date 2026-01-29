@@ -4,6 +4,7 @@
 import Foundation
 import Combine
 import CryptoKit
+import os.log
 
 // MARK: - Device Identity
 
@@ -40,6 +41,8 @@ struct DeviceIdentity {
 // MARK: - GatewayConnection
 
 class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate {
+    private static let log = Logger(subsystem: "com.moltbot.MoltNotch", category: "GatewayConnection")
+
     @Published private(set) var isConnected = false
 
     private var webSocketTask: URLSessionWebSocketTask?
@@ -71,7 +74,9 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
 
     func connect() {
         guard !isConnected else { return }
-        NSLog("[GatewayConnection] connect() to \(gatewayURL)")
+        #if DEBUG
+        Self.log.debug("connect() to \(self.gatewayURL, privacy: .private)")
+        #endif
         isReconnecting = false
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         connectNonce = nil
@@ -188,11 +193,15 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
 
         let healthInterval = TimeInterval(gatewayConfig.healthCheckInterval ?? 15)
 
-        NSLog("[GatewayConnection] Sending connect frame (nonce=\(nonce ?? "nil"))")
+        #if DEBUG
+        Self.log.debug("Sending connect frame (nonce=\(nonce ?? "nil", privacy: .private))")
+        #endif
         send(method: "connect", params: params) { [weak self] result in
             switch result {
             case .success(let response):
-                NSLog("[GatewayConnection] Connect response: ok=\(response.ok), error=\(response.error?.message ?? "nil")")
+                #if DEBUG
+                Self.log.debug("Connect response: ok=\(response.ok), error=\(response.error?.message ?? "nil", privacy: .private)")
+                #endif
                 if response.ok {
                     if let payload = response.payload?.value as? [String: Any],
                        let auth = payload["auth"] as? [String: Any],
@@ -203,14 +212,20 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
                     self?.updateConnected(true)
                     self?.onConnectionChanged?(true)
                     self?.startHealthCheck(interval: healthInterval)
-                    NSLog("[GatewayConnection] Connected successfully")
+                    #if DEBUG
+                    Self.log.debug("Connected successfully")
+                    #endif
                 } else {
                     let errorMsg = response.error?.message ?? "Connect failed"
-                    NSLog("[GatewayConnection] Connect failed: \(errorMsg)")
+                    #if DEBUG
+                    Self.log.error("Connect failed: \(errorMsg, privacy: .public)")
+                    #endif
                     self?.handleDisconnect(NSError(domain: "GatewayConnection", code: -1, userInfo: [NSLocalizedDescriptionKey: errorMsg]))
                 }
             case .failure(let error):
-                NSLog("[GatewayConnection] Connect error: \(error.localizedDescription)")
+                #if DEBUG
+                Self.log.error("Connect error: \(error.localizedDescription, privacy: .public)")
+                #endif
                 self?.handleDisconnect(error)
             }
         }
@@ -237,7 +252,9 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
         }
 
         guard let frame = try? JSONDecoder().decode(GatewayFrame.self, from: data) else {
-            NSLog("[GatewayConnection] Failed to decode frame: \(text.prefix(200))")
+            #if DEBUG
+            Self.log.warning("Failed to decode frame: \(text.prefix(200), privacy: .private)")
+            #endif
             return
         }
         switch frame.type {
@@ -301,7 +318,9 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
     // MARK: - URLSessionWebSocketDelegate
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        NSLog("[GatewayConnection] WebSocket opened, queueing connect handshake")
+        #if DEBUG
+        Self.log.debug("WebSocket opened, queueing connect handshake")
+        #endif
         queueConnect()
     }
 
