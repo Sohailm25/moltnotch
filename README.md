@@ -4,8 +4,9 @@
 [![Swift 5.0](https://img.shields.io/badge/Swift-5.0-F05138)](https://swift.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-ffd60a)](LICENSE)
 
-<!-- TODO: Add hero screenshot/GIF here -->
-<!-- <img src="assets/hero.png" alt="MoltNotch popup emerging from the MacBook notch" width="600" /> -->
+<p align="center">
+  <img src="assets/demo.gif" alt="MoltNotch demo — chat from the MacBook notch" width="600" />
+</p>
 
 macOS notch assistant that plugs into your [MoltBot](https://github.com/moltbot/moltbot) (Clawdbot) gateway. Ctrl+Space opens a glass chat popup from the notch — ask questions, attach your screen as context, and pick up the conversation anywhere MoltBot runs.
 
