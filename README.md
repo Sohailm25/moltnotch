@@ -38,6 +38,21 @@ modifiers = ["control"]
 
 The default gateway port is **18789**. If your gateway runs locally, you likely don't need to change the URL.
 
+### Finding Your Auth Token
+
+MoltBot **always requires authentication** — the onboarding wizard (`moltbot onboard`) generates a token by default, even on loopback. Find it in one of these places:
+
+| Gateway Auth Mode | Where to Find the Credential |
+|-------------------|------------------------------|
+| `token` (default) | `gateway.auth.token` in `~/.moltbot/moltbot.json`, or `CLAWDBOT_GATEWAY_TOKEN` env var |
+| `password` | `gateway.auth.password` in `~/.moltbot/moltbot.json`, or `CLAWDBOT_GATEWAY_PASSWORD` env var |
+
+You can also generate a new token: `moltbot doctor --generate-gateway-token`.
+
+Set whichever credential your gateway uses as `token = "..."` in `~/.moltnotch.toml` under `[gateway]`. MoltNotch sends it as both `auth.password` and `auth.token` in the connect handshake, so it works regardless of mode.
+
+> **Tip:** If you see "Gateway disconnected" after connecting, the token is likely missing or wrong. Check `gateway.auth.token` in `~/.moltbot/moltbot.json` on the gateway host.
+
 ### SSH Tunnel (Advanced)
 
 If your gateway runs on a remote machine behind a firewall, add a `[tunnel]` section and MoltNotch will automatically establish an SSH tunnel on launch:
@@ -70,6 +85,7 @@ This checks:
 | Symptom | Cause | Fix |
 |---------|-------|-----|
 | "Not connected to gateway" | Gateway not running or unreachable | Start your MoltBot gateway, then run `moltnotch doctor` |
+| Connects then immediately disconnects | Auth token/password missing or wrong | Check [Finding Your Auth Token](#finding-your-auth-token) — set the correct credential in `~/.moltnotch.toml` |
 | TCP passes but WebSocket fails | Wrong port, or gateway hasn't registered MoltNotch as a client | Ensure your MoltBot gateway is v0.8+ (includes `moltnotch-macos` client ID) |
 | "Config not found" | Missing `~/.moltnotch.toml` | Run `moltnotch setup` |
 

@@ -74,7 +74,15 @@ func runSetup() {
     print("")
 
     let gatewayURL = prompt("Gateway URL", defaultValue: "ws://127.0.0.1:18789")
-    let token = prompt("Auth token " + dim("(from your MoltBot config, or press Enter to skip)"), defaultValue: "")
+
+    print("")
+    print(dim("  Your gateway's auth token or password. MoltBot always requires auth."))
+    print(dim("  Find it in one of:"))
+    print(dim("    • gateway.auth.token in ~/.moltbot/moltbot.json on the gateway host"))
+    print(dim("    • CLAWDBOT_GATEWAY_TOKEN or CLAWDBOT_GATEWAY_PASSWORD env vars"))
+    print(dim("    • Run: moltbot doctor --generate-gateway-token"))
+    print("")
+    let token = prompt("Auth token/password", defaultValue: "")
 
     var tunnelConfig: String? = nil
 
@@ -147,6 +155,12 @@ func runSetup() {
     print("  1. Launch \(bold("MoltNotch.app"))")
     print("  2. Press \(bold("Ctrl+Space")) to open the assistant")
     print("")
+    if token.isEmpty {
+        print(yellow("⚠ No auth token set.") + " MoltBot requires a token to connect.")
+        print("  Find yours in \(cyan("~/.moltbot/moltbot.json")) → \(cyan("gateway.auth.token"))")
+        print("  Then edit \(cyan("~/.moltnotch.toml")) and set \(cyan("token = \"your-token\"")) under [gateway].")
+        print("")
+    }
     print("If something isn't working, run: \(cyan("moltnotch doctor"))")
     print("")
 }
