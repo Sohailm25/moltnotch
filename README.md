@@ -1,4 +1,4 @@
-# MoltNotch ⌘ — Chat with your AI from the MacBook notch
+# MoltNotch 🦞 — Chat with your Moltbot from the MacBook notch
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-0078d7)](https://developer.apple.com/macos/)
 [![Swift 5.0](https://img.shields.io/badge/Swift-5.0-F05138)](https://swift.org)
