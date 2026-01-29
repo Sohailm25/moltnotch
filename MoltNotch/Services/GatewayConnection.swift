@@ -71,6 +71,7 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
 
     func connect() {
         guard !isConnected else { return }
+        NSLog("[GatewayConnection] connect() to \(gatewayURL)")
         isReconnecting = false
         webSocketTask?.cancel(with: .goingAway, reason: nil)
         connectNonce = nil
@@ -187,11 +188,12 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
 
         let healthInterval = TimeInterval(gatewayConfig.healthCheckInterval ?? 15)
 
+        NSLog("[GatewayConnection] Sending connect frame (nonce=\(nonce ?? "nil"))")
         send(method: "connect", params: params) { [weak self] result in
             switch result {
             case .success(let response):
+                NSLog("[GatewayConnection] Connect response: ok=\(response.ok), error=\(response.error?.message ?? "nil")")
                 if response.ok {
-                    // Extract device token from hello-ok payload
                     if let payload = response.payload?.value as? [String: Any],
                        let auth = payload["auth"] as? [String: Any],
                        let deviceToken = auth["deviceToken"] as? String {
@@ -201,11 +203,14 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
                     self?.updateConnected(true)
                     self?.onConnectionChanged?(true)
                     self?.startHealthCheck(interval: healthInterval)
+                    NSLog("[GatewayConnection] Connected successfully")
                 } else {
                     let errorMsg = response.error?.message ?? "Connect failed"
+                    NSLog("[GatewayConnection] Connect failed: \(errorMsg)")
                     self?.handleDisconnect(NSError(domain: "GatewayConnection", code: -1, userInfo: [NSLocalizedDescriptionKey: errorMsg]))
                 }
             case .failure(let error):
+                NSLog("[GatewayConnection] Connect error: \(error.localizedDescription)")
                 self?.handleDisconnect(error)
             }
         }
@@ -232,9 +237,9 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
         }
 
         guard let frame = try? JSONDecoder().decode(GatewayFrame.self, from: data) else {
+            NSLog("[GatewayConnection] Failed to decode frame: \(text.prefix(200))")
             return
         }
-
         switch frame.type {
         case "res":
             if let response = try? JSONDecoder().decode(ResponseFrame.self, from: data) {
@@ -296,6 +301,7 @@ class GatewayConnection: NSObject, ObservableObject, URLSessionWebSocketDelegate
     // MARK: - URLSessionWebSocketDelegate
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
+        NSLog("[GatewayConnection] WebSocket opened, queueing connect handshake")
         queueConnect()
     }
 

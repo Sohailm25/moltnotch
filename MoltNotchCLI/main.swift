@@ -26,6 +26,7 @@ func green(_ text: String) -> String { "\u{001B}[32m\(text)\u{001B}[0m" }
 func yellow(_ text: String) -> String { "\u{001B}[33m\(text)\u{001B}[0m" }
 func red(_ text: String) -> String { "\u{001B}[31m\(text)\u{001B}[0m" }
 func cyan(_ text: String) -> String { "\u{001B}[36m\(text)\u{001B}[0m" }
+func dim(_ text: String) -> String { "\u{001B}[2m\(text)\u{001B}[0m" }
 
 func prompt(_ message: String, defaultValue: String? = nil) -> String {
     if let def = defaultValue {
@@ -52,6 +53,16 @@ func promptChoice(_ message: String, options: [(key: String, label: String)]) ->
     return options[idx - 1].key
 }
 
+func promptYesNo(_ message: String, defaultYes: Bool = true) -> Bool {
+    let hint = defaultYes ? "Y/n" : "y/N"
+    print("\(message) [\(hint)]: ", terminator: "")
+    guard let line = readLine()?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+          !line.isEmpty else {
+        return defaultYes
+    }
+    return line == "y" || line == "yes"
+}
+
 // MARK: - Setup
 
 func runSetup() {
@@ -59,51 +70,35 @@ func runSetup() {
     print(bold("🔧 MoltNotch Setup"))
     print("─────────────────────────────────")
     print("")
+    print("This will create \(cyan("~/.moltnotch.toml")) to connect MoltNotch to your MoltBot gateway.")
+    print("")
 
-    let location = promptChoice("Where is your MoltBot gateway running?", options: [
-        ("local", "On this computer (localhost)"),
-        ("remote", "On a remote server")
-    ])
+    let gatewayURL = prompt("Gateway URL", defaultValue: "ws://127.0.0.1:18789")
+    let token = prompt("Auth token " + dim("(from your MoltBot config, or press Enter to skip)"), defaultValue: "")
 
-    var gatewayURL: String
     var tunnelConfig: String? = nil
 
-    if location == "local" {
-        let port = prompt("Gateway port", defaultValue: "18789")
-        gatewayURL = "ws://127.0.0.1:\(port)"
-    } else {
-        let method = promptChoice("Connection method?", options: [
-            ("direct", "Direct WebSocket (server is publicly accessible)"),
-            ("tunnel", "SSH tunnel (server is behind firewall)")
-        ])
+    let needsTunnel = promptYesNo("Is the gateway on a remote server behind SSH?", defaultYes: false)
+    if needsTunnel {
+        print("")
+        print(dim("  MoltNotch will open an SSH tunnel automatically on launch."))
+        print("")
+        let sshHost = prompt("SSH host (IP or hostname)")
+        let sshUser = prompt("SSH user")
+        let sshPort = prompt("SSH port", defaultValue: "22")
+        let remotePort = prompt("Remote gateway port", defaultValue: "18789")
+        let localPort = prompt("Local port to forward to", defaultValue: "18789")
 
-        if method == "direct" {
-            gatewayURL = prompt("WebSocket URL (e.g. wss://myserver.com:18789)")
-        } else {
-            let sshHost = prompt("SSH host (e.g. myserver.com)")
-            let sshUser = prompt("SSH user")
-            let sshPort = prompt("SSH port", defaultValue: "22")
-            let remotePort = prompt("Remote gateway port", defaultValue: "18789")
-            let localPort = prompt("Local tunnel port", defaultValue: "18789")
+        tunnelConfig = """
 
-            gatewayURL = "ws://127.0.0.1:\(localPort)"
-
-            tunnelConfig = """
-
-            [tunnel]
-            host = "\(sshHost)"
-            user = "\(sshUser)"
-            port = \(sshPort)
-            remote-port = \(remotePort)
-            local-port = \(localPort)
-            """
-        }
+        [tunnel]
+        host = "\(sshHost)"
+        user = "\(sshUser)"
+        port = \(sshPort)
+        remote-port = \(remotePort)
+        local-port = \(localPort)
+        """
     }
-
-    let token = prompt("Gateway auth token (press Enter to skip)", defaultValue: "")
-
-    let hotkeyKey = prompt("Hotkey key", defaultValue: "space")
-    let hotkeyMod = prompt("Hotkey modifier (control/option/command)", defaultValue: "control")
 
     var toml = """
     [gateway]
@@ -113,8 +108,8 @@ func runSetup() {
     reconnect-max-attempts = 10
 
     [hotkey]
-    key = "\(hotkeyKey)"
-    modifiers = ["\(hotkeyMod)"]
+    key = "space"
+    modifiers = ["control"]
     """
 
     if let tunnel = tunnelConfig {
@@ -134,17 +129,28 @@ func runSetup() {
 
     print("")
     print(bold("Testing connection..."))
-    testGatewayConnection(url: gatewayURL)
+    let testURL = needsTunnel ? "ws://127.0.0.1:\(tunnelConfig != nil ? "18789" : "18789")" : gatewayURL
+    let tcpOk = testTCPConnection(url: testURL)
+
+    if tcpOk {
+        testWebSocketHandshake(url: testURL, token: token)
+    }
 
     print("")
-    print(green("Setup complete!") + " Launch MoltNotch.app to get started.")
+    print(green("Setup complete!"))
+    print("")
+    print("Next steps:")
+    print("  1. Launch \(bold("MoltNotch.app"))")
+    print("  2. Press \(bold("Ctrl+Space")) to open the assistant")
+    print("")
+    print("If something isn't working, run: \(cyan("moltnotch doctor"))")
     print("")
 }
 
-func testGatewayConnection(url urlString: String) {
+func testTCPConnection(url urlString: String) -> Bool {
     guard let url = URL(string: urlString) else {
         print(red("✗") + " Invalid URL: \(urlString)")
-        return
+        return false
     }
 
     let host = url.host ?? "127.0.0.1"
@@ -179,10 +185,53 @@ func testGatewayConnection(url urlString: String) {
     let timeout = DispatchTime.now() + .seconds(5)
     if semaphore.wait(timeout: timeout) == .timedOut {
         print(yellow("⚠") + " Connection timed out to \(host):\(port)")
+        return false
     } else if success {
         print(green("✓") + " Gateway reachable at \(host):\(port)")
+        return true
     } else {
         print(yellow("⚠") + " Could not reach \(host):\(port) — gateway may not be running yet")
+        return false
+    }
+}
+
+func testWebSocketHandshake(url urlString: String, token: String) {
+    guard let url = URL(string: urlString) else { return }
+
+    let semaphore = DispatchSemaphore(value: 0)
+    var resultMessage: String? = nil
+    var isOk = false
+
+    let session = URLSession(configuration: .default)
+    let task = session.webSocketTask(with: url)
+    task.resume()
+
+    task.receive { result in
+        switch result {
+        case .success(let message):
+            if case .string(let text) = message, text.contains("connect.challenge") {
+                isOk = true
+                resultMessage = nil
+            } else {
+                resultMessage = "Unexpected response from gateway"
+            }
+        case .failure(let error):
+            resultMessage = error.localizedDescription
+        }
+        task.cancel(with: .goingAway, reason: nil)
+        semaphore.signal()
+    }
+
+    let timeout = DispatchTime.now() + .seconds(5)
+    if semaphore.wait(timeout: timeout) == .timedOut {
+        print(yellow("⚠") + " WebSocket handshake timed out")
+        task.cancel(with: .goingAway, reason: nil)
+    } else if isOk {
+        print(green("✓") + " WebSocket handshake OK — gateway is responding")
+    } else if let msg = resultMessage {
+        print(yellow("⚠") + " WebSocket connected but: \(msg)")
+    } else {
+        print(green("✓") + " WebSocket connected to gateway")
     }
 }
 
@@ -199,7 +248,7 @@ func runDoctor() {
         print(green("✓") + " Config file exists: \(configPath.path)")
     } else {
         print(red("✗") + " Config file missing: \(configPath.path)")
-        print("  Run `moltnotch setup` to create it.")
+        print("  Run \(cyan("moltnotch setup")) to create it.")
         exit(1)
     }
 
@@ -225,12 +274,15 @@ func runDoctor() {
         print(green("✓") + " Config parses successfully")
         print("  Gateway URL: \(config.gateway.url)")
         if let token = config.gateway.token, !token.isEmpty {
-            print("  Auth token: (set)")
+            print("  Auth token: \(green("set"))")
         } else {
-            print("  Auth token: (not set)")
+            print("  Auth token: \(yellow("not set")) — may be required by your gateway")
         }
 
-        testGatewayConnection(url: config.gateway.url)
+        let tcpOk = testTCPConnection(url: config.gateway.url)
+        if tcpOk {
+            testWebSocketHandshake(url: config.gateway.url, token: config.gateway.token ?? "")
+        }
 
         if let tunnel = config.tunnel {
             print("")

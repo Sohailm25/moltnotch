@@ -5,21 +5,24 @@ A macOS notch assistant that connects to your [MoltBot](https://github.com/moltb
 ## Requirements
 
 - macOS 14.0+ (macOS 26 for Liquid Glass effects)
-- A running [MoltBot](https://github.com/moltbot/moltbot) gateway instance
+- A running [MoltBot](https://github.com/moltbot/moltbot) gateway (v0.8+)
 
 ## Quick Start
 
-1. Download MoltNotch from [Releases](https://github.com/moltbot/moltnotch/releases)
-2. Run the setup wizard:
+1. **Start your MoltBot gateway** on the machine where it's installed.
+2. **Download MoltNotch** from [Releases](https://github.com/moltbot/moltnotch/releases), or [build from source](#building-from-source).
+3. **Run the setup wizard** — it asks three questions (gateway URL, auth token, SSH tunnel yes/no):
    ```sh
    moltnotch setup
    ```
-3. Launch **MoltNotch.app**
-4. Press **Ctrl+Space** to open the notch popup
+4. **Launch MoltNotch.app**
+5. **Press Ctrl+Space** to open the notch popup
+
+The setup wizard writes `~/.moltnotch.toml` and tests both TCP reachability and WebSocket handshake with your gateway.
 
 ## Configuration
 
-MoltNotch reads from `~/.moltnotch.toml`:
+MoltNotch reads from `~/.moltnotch.toml`. The setup wizard generates this automatically, but you can also edit it by hand:
 
 ```toml
 [gateway]
@@ -31,8 +34,15 @@ reconnect-max-attempts = 10
 [hotkey]
 key = "space"
 modifiers = ["control"]
+```
 
-# Optional — only needed for SSH tunnel connections
+The default gateway port is **18789**. If your gateway runs locally, you likely don't need to change the URL.
+
+### SSH Tunnel (Advanced)
+
+If your gateway runs on a remote machine behind a firewall, add a `[tunnel]` section and MoltNotch will automatically establish an SSH tunnel on launch:
+
+```toml
 [tunnel]
 host = "myserver.example.com"
 user = "username"
@@ -40,14 +50,6 @@ port = 22
 remote-port = 18789
 local-port = 18789
 ```
-
-### Connection Modes
-
-**Local**: Gateway running on localhost — set `url = "ws://127.0.0.1:18789"`.
-
-**Direct remote**: Gateway publicly accessible — set `url = "wss://myserver.com:18789"`.
-
-**SSH tunnel**: Gateway behind a firewall — configure the `[tunnel]` section and MoltNotch will automatically establish an SSH tunnel before connecting.
 
 ## Troubleshooting
 
@@ -59,22 +61,27 @@ moltnotch doctor
 
 This checks:
 - Config file exists and parses correctly
-- Gateway is reachable
+- Gateway is reachable (TCP)
+- WebSocket handshake succeeds (protocol-level)
 - SSH host is reachable (if tunnel configured)
+
+### Common Issues
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "Not connected to gateway" | Gateway not running or unreachable | Start your MoltBot gateway, then run `moltnotch doctor` |
+| TCP passes but WebSocket fails | Wrong port, or gateway hasn't registered MoltNotch as a client | Ensure your MoltBot gateway is v0.8+ (includes `moltnotch-macos` client ID) |
+| "Config not found" | Missing `~/.moltnotch.toml` | Run `moltnotch setup` |
 
 ## Building from Source
 
 ```sh
-# Install xcodegen
 brew install xcodegen
 
-# Clone and build
 git clone https://github.com/moltbot/moltnotch.git
 cd moltnotch
 xcodegen generate
 xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotch -configuration Release
-
-# Build the CLI tool
 xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotchCLI -configuration Release
 ```
 

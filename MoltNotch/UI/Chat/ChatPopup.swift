@@ -199,9 +199,20 @@ struct ChatPopup: View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundColor(.yellow)
-            Text("Not connected. Check your gateway configuration.")
-                .font(.caption)
-                .foregroundColor(.white.opacity(0.7))
+            VStack(alignment: .leading, spacing: 2) {
+                if let errorDetail = manager.errorMessage {
+                    Text(errorDetail)
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
+                } else {
+                    Text("Not connected to gateway")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.7))
+                }
+                Text("Run `moltnotch doctor` to diagnose")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.4))
+            }
         }
         .padding(10)
         .background(
