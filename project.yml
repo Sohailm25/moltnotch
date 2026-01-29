@@ -1,0 +1,61 @@
+name: MoltNotch
+options:
+  bundleIdPrefix: com.moltbot
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    ENABLE_HARDENED_RUNTIME: true
+
+targets:
+  MoltNotch:
+    type: application
+    platform: macOS
+    sources:
+      - MoltNotch
+    settings:
+      base:
+        INFOPLIST_KEY_LSUIElement: true
+        PRODUCT_BUNDLE_IDENTIFIER: com.moltbot.MoltNotch
+        PRODUCT_NAME: MoltNotch
+        CODE_SIGN_ENTITLEMENTS: ""
+        ENABLE_APP_SANDBOX: false
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    info:
+      path: MoltNotch/Info.plist
+      properties:
+        CFBundleName: MoltNotch
+        CFBundleDisplayName: MoltNotch
+        CFBundleIdentifier: com.moltbot.MoltNotch
+        CFBundleVersion: "1"
+        CFBundleShortVersionString: "1.0.0"
+        CFBundlePackageType: APPL
+        LSUIElement: true
+        NSScreenCaptureUsageDescription: "MoltNotch captures your screen to share with MoltBot when you ask about what's on your screen."
+
+  MoltNotchTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - MoltNotchTests
+    dependencies:
+      - target: MoltNotch
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.moltbot.MoltNotchTests
+        PRODUCT_NAME: MoltNotchTests
+        GENERATE_INFOPLIST_FILE: true
+
+  MoltNotchCLI:
+    type: tool
+    platform: macOS
+    sources:
+      - MoltNotchCLI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.moltbot.MoltNotchCLI
+        PRODUCT_NAME: moltnotch
