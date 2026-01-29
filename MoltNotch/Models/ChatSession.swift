@@ -1,4 +1,4 @@
-// ABOUTME: In-memory chat session model for the MoltBot assistant. Ported from Barik.
+// ABOUTME: In-memory chat session model for the MoltBot assistant.
 // ABOUTME: Tracks connection state, messages, and active streaming runs.
 
 import Foundation

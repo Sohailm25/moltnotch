@@ -1,4 +1,4 @@
-// ABOUTME: Tests for gateway frame encoding and decoding (protocol v3). Ported from Barik.
+// ABOUTME: Tests for gateway frame encoding and decoding (protocol v3).
 // ABOUTME: Verifies JSON serialization of outgoing requests and deserialization of incoming frames.
 
 import XCTest

@@ -1,4 +1,4 @@
-// ABOUTME: Shared constants for notch panel geometry and animation. Ported from Barik.
+// ABOUTME: Shared constants for notch panel geometry and animation.
 // ABOUTME: Defines fallback dimensions and corner radii for open/closed notch states.
 
 import CoreFoundation

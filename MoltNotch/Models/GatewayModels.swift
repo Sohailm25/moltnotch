@@ -1,4 +1,4 @@
-// ABOUTME: WebSocket protocol frame types for the gateway (protocol v3). Ported from Barik.
+// ABOUTME: WebSocket protocol frame types for the gateway (protocol v3).
 // ABOUTME: Encodes outgoing requests and decodes incoming events/responses.
 
 import Foundation

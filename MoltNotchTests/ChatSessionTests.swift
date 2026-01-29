@@ -1,4 +1,4 @@
-// ABOUTME: Tests for ChatSession and ChatMessage model behavior. Ported from Barik.
+// ABOUTME: Tests for ChatSession and ChatMessage model behavior.
 // ABOUTME: Verifies session lifecycle, message mutability, and enum equality.
 
 import XCTest
