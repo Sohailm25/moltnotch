@@ -2,27 +2,86 @@
 
 A macOS notch assistant that connects to your [MoltBot](https://github.com/moltbot/moltbot) gateway. Chat with your AI assistant from a sleek popup that emerges from your MacBook's notch.
 
+MoltNotch runs as a **menu bar app** — look for the ✦ icon in your menu bar, not a window. Press **Ctrl+Space** (or click the icon) to open the chat popup.
+
 ## Requirements
 
 - macOS 14.0+ (macOS 26 for Liquid Glass effects)
+- Xcode 16+ (for ScreenCaptureKit APIs)
+- [Homebrew](https://brew.sh) (to install xcodegen)
 - A running [MoltBot](https://github.com/moltbot/moltbot) gateway (v0.8+)
 
 ## Quick Start
 
-1. **Start your MoltBot gateway** on the machine where it's installed.
-2. **Download MoltNotch** from [Releases](https://github.com/moltbot/moltnotch/releases), or [build from source](#building-from-source).
-3. **Run the setup wizard** — it asks three questions (gateway URL, auth token, SSH tunnel yes/no):
-   ```sh
-   moltnotch setup
-   ```
-4. **Launch MoltNotch.app**
-5. **Press Ctrl+Space** to open the notch popup
+### 1. Build from source
 
-The setup wizard writes `~/.moltnotch.toml` and tests both TCP reachability and WebSocket handshake with your gateway.
+```sh
+brew install xcodegen
+
+git clone https://github.com/moltbot/moltnotch.git
+cd moltnotch
+xcodegen generate
+xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotch -configuration Release -derivedDataPath build/derived
+xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotchCLI -configuration Release -derivedDataPath build/derived
+```
+
+After building, the binaries are at:
+- **App:** `build/derived/Build/Products/Release/MoltNotch.app`
+- **CLI:** `build/derived/Build/Products/Release/moltnotch`
+
+### 2. Install the CLI
+
+The CLI (`moltnotch`) provides the setup wizard and diagnostics. Copy it somewhere on your PATH:
+
+```sh
+cp build/derived/Build/Products/Release/moltnotch /usr/local/bin/
+```
+
+### 3. Run the setup wizard
+
+The wizard asks three questions — gateway URL, auth token, and whether you need an SSH tunnel:
+
+```sh
+moltnotch setup
+```
+
+This writes `~/.moltnotch.toml` and tests both TCP reachability and WebSocket handshake with your gateway.
+
+### 4. Grant macOS permissions
+
+MoltNotch needs two macOS permissions to function properly. Open **System Settings → Privacy & Security** and enable MoltNotch under:
+
+| Permission | Why | What breaks without it |
+|------------|-----|------------------------|
+| **Accessibility** | Global hotkey (Ctrl+Space) | Hotkey won't trigger — you can only open the popup by clicking the menu bar icon |
+| **Screen Recording** | Screenshot attachment feature | Screenshot sends will fail silently or show an error |
+
+> **Note:** macOS requires you to **relaunch the app** after granting either permission.
+
+On first launch, MoltNotch will prompt for Screen Recording permission automatically. For Accessibility, you may need to add the app manually (click `+`, navigate to `MoltNotch.app`).
+
+### 5. Launch
+
+```sh
+open build/derived/Build/Products/Release/MoltNotch.app
+```
+
+Or move `MoltNotch.app` to `/Applications` and launch from there. Press **Ctrl+Space** to open the chat popup.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| **Ctrl+Space** | Toggle the chat popup |
+| **Enter** | Send message |
+| **Tab** | Toggle screenshot attachment (cyan 📷 icon appears in input field) |
+| **Shift+Enter** | Send message with screenshot (regardless of Tab toggle) |
+| **Ctrl tap twice** | Clear visible chat (first tap shows confirmation, second clears). Backend conversation is preserved. |
+| **Escape** | Stop streaming → clear input → dismiss popup (cascading) |
 
 ## Configuration
 
-MoltNotch reads from `~/.moltnotch.toml`. The setup wizard generates this automatically, but you can also edit it by hand:
+MoltNotch reads from `~/.moltnotch.toml`. The setup wizard generates this automatically, but you can edit it by hand:
 
 ```toml
 [gateway]
@@ -86,20 +145,21 @@ This checks:
 |---------|-------|-----|
 | "Not connected to gateway" | Gateway not running or unreachable | Start your MoltBot gateway, then run `moltnotch doctor` |
 | Connects then immediately disconnects | Auth token/password missing or wrong | Check [Finding Your Auth Token](#finding-your-auth-token) — set the correct credential in `~/.moltnotch.toml` |
+| Ctrl+Space doesn't open popup | Accessibility permission not granted | System Settings → Privacy & Security → Accessibility → enable MoltNotch, then relaunch |
+| Screenshot sends fail or show error | Screen Recording permission not granted | System Settings → Privacy & Security → Screen Recording → enable MoltNotch, then relaunch |
 | TCP passes but WebSocket fails | Wrong port, or gateway hasn't registered MoltNotch as a client | Ensure your MoltBot gateway is v0.8+ (includes `moltnotch-macos` client ID) |
 | "Config not found" | Missing `~/.moltnotch.toml` | Run `moltnotch setup` |
+| App doesn't appear anywhere | MoltNotch is a menu bar app, not a windowed app | Look for the ✦ icon in the menu bar (top-right of screen) |
 
-## Building from Source
+## Building a Release DMG
+
+To build a distributable DMG with both the app and CLI:
 
 ```sh
-brew install xcodegen
-
-git clone https://github.com/moltbot/moltnotch.git
-cd moltnotch
-xcodegen generate
-xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotch -configuration Release
-xcodebuild build -project MoltNotch.xcodeproj -scheme MoltNotchCLI -configuration Release
+./Scripts/build-release.sh
 ```
+
+Output: `build/MoltNotch.dmg`
 
 ## License
 
