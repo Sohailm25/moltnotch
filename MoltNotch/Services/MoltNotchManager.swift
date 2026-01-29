@@ -85,25 +85,53 @@ class MoltNotchManager: ObservableObject {
             return
         }
 
+        #if DEBUG
+        NSLog("[MoltNotchManager] sendMessage called. includeScreenshot=\(includeScreenshot) text=\(text.prefix(30))")
+        #endif
+
         let userMessage = ChatMessage(role: .user, content: text, state: .sending, hasScreenshot: includeScreenshot)
         DispatchQueue.main.async { [weak self] in
             self?.session.messages.append(userMessage)
         }
 
-        var attachments: [ChatAttachment]? = nil
         if includeScreenshot {
-            NSLog("[MoltNotchManager] includeScreenshot=true, attempting capture")
-            if let base64 = ScreenCaptureService.captureAsBase64() {
-                NSLog("[MoltNotchManager] screenshot captured, base64 length=\(base64.count)")
-                attachments = [ChatAttachment(
-                    type: "screenshot",
-                    mimeType: "image/jpeg",
-                    fileName: "screen-capture.jpg",
-                    content: base64
-                )]
+            Task { [weak self] in
+                guard ScreenCaptureService.hasPermission() else {
+                    #if DEBUG
+                    NSLog("[MoltNotchManager] Screen recording permission denied")
+                    #endif
+                    DispatchQueue.main.async {
+                        self?.markLastUserMessageError("Screen recording permission required — grant in System Settings → Privacy & Security → Screen Recording")
+                    }
+                    return
+                }
+                let base64 = await ScreenCaptureService.captureAsBase64()
+                #if DEBUG
+                NSLog("[MoltNotchManager] screenshot base64=\(base64 != nil ? "yes(\(base64!.count))" : "nil")")
+                #endif
+                if let base64 = base64 {
+                    let attachments = [ChatAttachment(
+                        type: "screenshot",
+                        mimeType: "image/jpeg",
+                        fileName: "screen-capture.jpg",
+                        content: base64
+                    )]
+                    self?.dispatchSend(text: text, attachments: attachments)
+                } else {
+                    DispatchQueue.main.async {
+                        self?.markLastUserMessageError("Screenshot capture failed")
+                    }
+                }
             }
+        } else {
+            dispatchSend(text: text, attachments: nil)
         }
+    }
 
+    private func dispatchSend(text: String, attachments: [ChatAttachment]?) {
+        #if DEBUG
+        NSLog("[MoltNotchManager] dispatchSend text=\(text.prefix(30)) attachments=\(attachments?.count ?? 0)")
+        #endif
         let params = ChatSendParams(
             sessionKey: session.sessionKey,
             message: text,

@@ -8,6 +8,8 @@ struct ChatPopup: View {
     @ObservedObject var manager: MoltNotchManager
     @State private var inputText = ""
     @State private var isExpanded = false
+    @State private var screenshotEnabled = false
+    @State private var keyMonitor: Any?
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -70,24 +72,53 @@ struct ChatPopup: View {
     // MARK: - Input
 
     private var inputField: some View {
-        ZStack(alignment: .leading) {
-            if inputText.isEmpty {
-                ShimmerText("Ask anything...")
-            }
-            TextField("", text: $inputText)
-                .textFieldStyle(.plain)
-                .font(.system(size: 18, weight: .medium, design: .rounded))
-                .foregroundColor(.white)
-                .focused($isInputFocused)
-                .onSubmit {
-                    let flags = NSEvent.modifierFlags
-                    let hasShift = flags.contains(.shift)
-                    if hasShift {
-                        submitWithScreenshot()
-                    } else {
-                        submitQuery()
-                    }
+        HStack(spacing: 8) {
+            ZStack(alignment: .leading) {
+                if inputText.isEmpty {
+                    ShimmerText("Ask anything...")
                 }
+                TextField("", text: $inputText)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                    .foregroundColor(.white)
+                    .focused($isInputFocused)
+                    .onSubmit {
+                        submitWithCurrentMode()
+                    }
+            }
+
+            if screenshotEnabled {
+                Image(systemName: "camera.fill")
+                    .font(.system(size: 14))
+                    .foregroundColor(.cyan)
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.15), value: screenshotEnabled)
+        .onAppear { installKeyMonitor() }
+        .onDisappear { removeKeyMonitor() }
+    }
+
+    private func installKeyMonitor() {
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            // Tab toggles screenshot mode
+            if event.keyCode == 48 && !event.modifierFlags.contains(.shift) {
+                screenshotEnabled.toggle()
+                return nil
+            }
+            // Shift+Return submits with screenshot regardless of toggle
+            if event.keyCode == 36 && event.modifierFlags.contains(.shift) {
+                submitWithScreenshot()
+                return nil
+            }
+            return event
+        }
+    }
+
+    private func removeKeyMonitor() {
+        if let monitor = keyMonitor {
+            NSEvent.removeMonitor(monitor)
+            keyMonitor = nil
         }
     }
 
@@ -247,11 +278,23 @@ struct ChatPopup: View {
         return "Thinking..."
     }
 
-    private func submitQuery() {
+    private func submitWithCurrentMode() {
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        manager.sendMessage(trimmed)
+        #if DEBUG
+        NSLog("[ChatPopup] submitWithCurrentMode screenshotEnabled=\(screenshotEnabled) text=\(trimmed.prefix(30))")
+        #endif
+        manager.sendMessage(trimmed, includeScreenshot: screenshotEnabled)
         inputText = ""
+        screenshotEnabled = false
+    }
+
+    private func submitWithScreenshot() {
+        let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        manager.sendMessage(trimmed, includeScreenshot: true)
+        inputText = ""
+        screenshotEnabled = false
     }
 
     private func handleEscape() {
@@ -262,12 +305,5 @@ struct ChatPopup: View {
         } else {
             manager.dismissPanel()
         }
-    }
-
-    private func submitWithScreenshot() {
-        let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        manager.sendMessage(trimmed, includeScreenshot: true)
-        inputText = ""
     }
 }
