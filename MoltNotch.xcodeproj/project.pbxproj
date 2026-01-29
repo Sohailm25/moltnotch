@@ -7,15 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B7546C3C86EE2B443163FA9 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91EF3CE9DBDD781DB49C9328 /* Config.swift */; };
 		38B0198D9EDA70826F61A249 /* TOMLDecoder in Frameworks */ = {isa = PBXBuildFile; productRef = 6099439A4DF69D31BDC98415 /* TOMLDecoder */; };
 		50D5E87CA3C72F39699F7F68 /* MoltNotchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FEC33292E537608CD44AB7 /* MoltNotchApp.swift */; };
-		564AC54956A0371A87EA1895 /* MoltNotchTestsPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0420670B3F12758A4B2D49D5 /* MoltNotchTestsPlaceholder.swift */; };
+		563F32FB1E1DBE93A82C42A8 /* GatewayModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5828D5AF81C4864550E16A1 /* GatewayModelsTests.swift */; };
+		7572E8F460B8832D89F682BF /* ChatSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81E0A57394A9C7BD47C5DC52 /* ChatSessionTests.swift */; };
 		826CE152E97E8419BFC6D3DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3CE2F597FD889EEBF107E4 /* Assets.xcassets */; };
 		870A6B4A30EFEF5413C17B1D /* TOMLDecoder in Frameworks */ = {isa = PBXBuildFile; productRef = 713DE35B45CC917F8398A06C /* TOMLDecoder */; };
 		B1D817BA53ACDE5E5CF01C43 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = D7879C7F08755EA0D8EF593C /* HotKey */; };
+		B82FB6520A1EF136568C2CFA /* ChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447A36FCAC8C655FF9B42D4F /* ChatSession.swift */; };
+		C99B11715B8BC011468C2EC4 /* GatewayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980EBA470207DF400637DC0A /* GatewayModels.swift */; };
+		CEA813AAA8EBFB4A03DDDA7A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06F4CE2346B2CB247791D952 /* Constants.swift */; };
 		D20AE065521268C96780B2F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98A9F1D5F962C82BC089B1B /* AppDelegate.swift */; };
 		D2916BA7771A8BA61FF5E6E8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D0B17292D8AD61F9EC5F2AA /* main.swift */; };
 		DF271389B747D3C6C31F50AE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A2E51277E00F3033DA22356A /* MarkdownUI */; };
+		FA8713E000B85782DA8CDE64 /* ConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2475A96269E86A6FBA21E50E /* ConfigTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,13 +35,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0420670B3F12758A4B2D49D5 /* MoltNotchTestsPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoltNotchTestsPlaceholder.swift; sourceTree = "<group>"; };
 		04FEC33292E537608CD44AB7 /* MoltNotchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoltNotchApp.swift; sourceTree = "<group>"; };
+		06F4CE2346B2CB247791D952 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2475A96269E86A6FBA21E50E /* ConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigTests.swift; sourceTree = "<group>"; };
 		3F3CE2F597FD889EEBF107E4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		447A36FCAC8C655FF9B42D4F /* ChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSession.swift; sourceTree = "<group>"; };
 		723BF5F872AF05D22B352B6D /* MoltNotchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MoltNotchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		81E0A57394A9C7BD47C5DC52 /* ChatSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSessionTests.swift; sourceTree = "<group>"; };
 		85A4368FF7D44F160BC5AB2A /* MoltNotchCLI */ = {isa = PBXFileReference; includeInIndex = 0; path = MoltNotchCLI; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D0B17292D8AD61F9EC5F2AA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		91EF3CE9DBDD781DB49C9328 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		980EBA470207DF400637DC0A /* GatewayModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayModels.swift; sourceTree = "<group>"; };
 		B98A9F1D5F962C82BC089B1B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		C5828D5AF81C4864550E16A1 /* GatewayModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatewayModelsTests.swift; sourceTree = "<group>"; };
 		CFAF45FC407CF1574AD68CED /* MoltNotch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoltNotch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0DEFF41424ABFDDD6BCCF40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +93,17 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		246827286F7CF7B428052C13 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				447A36FCAC8C655FF9B42D4F /* ChatSession.swift */,
+				91EF3CE9DBDD781DB49C9328 /* Config.swift */,
+				06F4CE2346B2CB247791D952 /* Constants.swift */,
+				980EBA470207DF400637DC0A /* GatewayModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		4588E947D9D1E8E8CB3E143D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -92,7 +115,9 @@
 		5DEAF8E2F59BE1CF9827EA4D /* MoltNotchTests */ = {
 			isa = PBXGroup;
 			children = (
-				0420670B3F12758A4B2D49D5 /* MoltNotchTestsPlaceholder.swift */,
+				81E0A57394A9C7BD47C5DC52 /* ChatSessionTests.swift */,
+				2475A96269E86A6FBA21E50E /* ConfigTests.swift */,
+				C5828D5AF81C4864550E16A1 /* GatewayModelsTests.swift */,
 			);
 			path = MoltNotchTests;
 			sourceTree = "<group>";
@@ -127,6 +152,7 @@
 			children = (
 				E0DEFF41424ABFDDD6BCCF40 /* Info.plist */,
 				1D98559F8DFB20317B6AFC6E /* App */,
+				246827286F7CF7B428052C13 /* Models */,
 				4588E947D9D1E8E8CB3E143D /* Resources */,
 				6A5756EDA3A06DFB5F788248 /* UI */,
 			);
@@ -247,6 +273,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				D20AE065521268C96780B2F0 /* AppDelegate.swift in Sources */,
+				B82FB6520A1EF136568C2CFA /* ChatSession.swift in Sources */,
+				2B7546C3C86EE2B443163FA9 /* Config.swift in Sources */,
+				CEA813AAA8EBFB4A03DDDA7A /* Constants.swift in Sources */,
+				C99B11715B8BC011468C2EC4 /* GatewayModels.swift in Sources */,
 				50D5E87CA3C72F39699F7F68 /* MoltNotchApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,7 +293,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				564AC54956A0371A87EA1895 /* MoltNotchTestsPlaceholder.swift in Sources */,
+				7572E8F460B8832D89F682BF /* ChatSessionTests.swift in Sources */,
+				FA8713E000B85782DA8CDE64 /* ConfigTests.swift in Sources */,
+				563F32FB1E1DBE93A82C42A8 /* GatewayModelsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
