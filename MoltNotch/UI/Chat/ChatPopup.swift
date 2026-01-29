@@ -10,6 +10,10 @@ struct ChatPopup: View {
     @State private var isExpanded = false
     @State private var screenshotEnabled = false
     @State private var keyMonitor: Any?
+    @State private var flagsMonitor: Any?
+    @State private var showClearConfirm = false
+    @State private var clearConfirmTimer: Timer?
+    @State private var lastCtrlPressTime: Date?
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -38,6 +42,11 @@ struct ChatPopup: View {
                 disconnectedBanner
             }
 
+            if showClearConfirm {
+                clearConfirmBanner
+                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+            }
+
             GlassControlContainer {
                 inputField
             }
@@ -58,6 +67,7 @@ struct ChatPopup: View {
         .frame(width: 600)
         .fixedSize(horizontal: false, vertical: true)
         .animation(.bouncy(duration: 0.4), value: isExpanded)
+        .animation(.easeInOut(duration: 0.2), value: showClearConfirm)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 NSApp.activate(ignoringOtherApps: true)
@@ -101,16 +111,18 @@ struct ChatPopup: View {
 
     private func installKeyMonitor() {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            // Tab toggles screenshot mode
             if event.keyCode == 48 && !event.modifierFlags.contains(.shift) {
                 screenshotEnabled.toggle()
                 return nil
             }
-            // Shift+Return submits with screenshot regardless of toggle
             if event.keyCode == 36 && event.modifierFlags.contains(.shift) {
                 submitWithScreenshot()
                 return nil
             }
+            return event
+        }
+        flagsMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { event in
+            handleCtrlTap(event)
             return event
         }
     }
@@ -120,6 +132,40 @@ struct ChatPopup: View {
             NSEvent.removeMonitor(monitor)
             keyMonitor = nil
         }
+        if let monitor = flagsMonitor {
+            NSEvent.removeMonitor(monitor)
+            flagsMonitor = nil
+        }
+    }
+
+    private func handleCtrlTap(_ event: NSEvent) {
+        let ctrlOnly = event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .control
+        let ctrlPressed = event.modifierFlags.contains(.control)
+
+        guard ctrlPressed && ctrlOnly else { return }
+        guard !manager.session.messages.isEmpty && !manager.isStreaming else { return }
+
+        let now = Date()
+        if showClearConfirm, let last = lastCtrlPressTime, now.timeIntervalSince(last) < 2.0 {
+            clearVisibleChat()
+            dismissClearConfirm()
+        } else {
+            showClearConfirm = true
+            lastCtrlPressTime = now
+            clearConfirmTimer?.invalidate()
+            clearConfirmTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
+                DispatchQueue.main.async {
+                    dismissClearConfirm()
+                }
+            }
+        }
+    }
+
+    private func dismissClearConfirm() {
+        showClearConfirm = false
+        lastCtrlPressTime = nil
+        clearConfirmTimer?.invalidate()
+        clearConfirmTimer = nil
     }
 
     // MARK: - Expanded Conversation
@@ -226,6 +272,23 @@ struct ChatPopup: View {
         }
     }
 
+    private var clearConfirmBanner: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "trash")
+                .foregroundColor(.white.opacity(0.6))
+            Text("Press Ctrl again to clear chat")
+                .font(.caption)
+                .foregroundColor(.white.opacity(0.7))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.white.opacity(0.1))
+        )
+        .frame(maxWidth: .infinity)
+    }
+
     private var disconnectedBanner: some View {
         HStack(spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -276,6 +339,12 @@ struct ChatPopup: View {
             return "Sending..."
         }
         return "Thinking..."
+    }
+
+    private func clearVisibleChat() {
+        guard !manager.isStreaming else { return }
+        manager.session.messages.removeAll()
+        isExpanded = false
     }
 
     private func submitWithCurrentMode() {
