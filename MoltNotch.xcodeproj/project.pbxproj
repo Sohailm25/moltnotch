@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38B0198D9EDA70826F61A249 /* TOMLDecoder in Frameworks */ = {isa = PBXBuildFile; productRef = 6099439A4DF69D31BDC98415 /* TOMLDecoder */; };
 		50D5E87CA3C72F39699F7F68 /* MoltNotchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FEC33292E537608CD44AB7 /* MoltNotchApp.swift */; };
 		564AC54956A0371A87EA1895 /* MoltNotchTestsPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0420670B3F12758A4B2D49D5 /* MoltNotchTestsPlaceholder.swift */; };
 		826CE152E97E8419BFC6D3DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3CE2F597FD889EEBF107E4 /* Assets.xcassets */; };
+		870A6B4A30EFEF5413C17B1D /* TOMLDecoder in Frameworks */ = {isa = PBXBuildFile; productRef = 713DE35B45CC917F8398A06C /* TOMLDecoder */; };
+		B1D817BA53ACDE5E5CF01C43 /* HotKey in Frameworks */ = {isa = PBXBuildFile; productRef = D7879C7F08755EA0D8EF593C /* HotKey */; };
 		D20AE065521268C96780B2F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98A9F1D5F962C82BC089B1B /* AppDelegate.swift */; };
 		D2916BA7771A8BA61FF5E6E8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D0B17292D8AD61F9EC5F2AA /* main.swift */; };
+		DF271389B747D3C6C31F50AE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A2E51277E00F3033DA22356A /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +39,27 @@
 		CFAF45FC407CF1574AD68CED /* MoltNotch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoltNotch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0DEFF41424ABFDDD6BCCF40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		525F39300F4777A64D571DD5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				38B0198D9EDA70826F61A249 /* TOMLDecoder in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A49653BA926264A90325396C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1D817BA53ACDE5E5CF01C43 /* HotKey in Frameworks */,
+				DF271389B747D3C6C31F50AE /* MarkdownUI in Frameworks */,
+				870A6B4A30EFEF5413C17B1D /* TOMLDecoder in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		049EBCCFE24A368B4DF79A13 = {
@@ -135,6 +160,7 @@
 			buildPhases = (
 				140275E3F5EBBA015F410844 /* Sources */,
 				C01B2873CC42154F6DCA7153 /* Resources */,
+				A49653BA926264A90325396C /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -142,6 +168,9 @@
 			);
 			name = MoltNotch;
 			packageProductDependencies = (
+				D7879C7F08755EA0D8EF593C /* HotKey */,
+				A2E51277E00F3033DA22356A /* MarkdownUI */,
+				713DE35B45CC917F8398A06C /* TOMLDecoder */,
 			);
 			productName = MoltNotch;
 			productReference = CFAF45FC407CF1574AD68CED /* MoltNotch.app */;
@@ -152,6 +181,7 @@
 			buildConfigurationList = EFC4D98CAA13338FE25ACCBE /* Build configuration list for PBXNativeTarget "MoltNotchCLI" */;
 			buildPhases = (
 				4501D386ED3D865EF1D76BB3 /* Sources */,
+				525F39300F4777A64D571DD5 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -159,6 +189,7 @@
 			);
 			name = MoltNotchCLI;
 			packageProductDependencies = (
+				6099439A4DF69D31BDC98415 /* TOMLDecoder */,
 			);
 			productName = MoltNotchCLI;
 			productReference = 85A4368FF7D44F160BC5AB2A /* MoltNotchCLI */;
@@ -183,6 +214,11 @@
 			);
 			mainGroup = 049EBCCFE24A368B4DF79A13;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2E1AFAAD40D2A8AA1DE220B3 /* XCRemoteSwiftPackageReference "HotKey" */,
+				A037E0E7745CB09A0DF5BF3A /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				3B109D82A6BD2E4136F7E416 /* XCRemoteSwiftPackageReference "TOMLDecoder" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
@@ -505,6 +541,56 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2E1AFAAD40D2A8AA1DE220B3 /* XCRemoteSwiftPackageReference "HotKey" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/soffes/HotKey";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.1;
+			};
+		};
+		3B109D82A6BD2E4136F7E416 /* XCRemoteSwiftPackageReference "TOMLDecoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dduan/TOMLDecoder";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.2;
+			};
+		};
+		A037E0E7745CB09A0DF5BF3A /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6099439A4DF69D31BDC98415 /* TOMLDecoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B109D82A6BD2E4136F7E416 /* XCRemoteSwiftPackageReference "TOMLDecoder" */;
+			productName = TOMLDecoder;
+		};
+		713DE35B45CC917F8398A06C /* TOMLDecoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B109D82A6BD2E4136F7E416 /* XCRemoteSwiftPackageReference "TOMLDecoder" */;
+			productName = TOMLDecoder;
+		};
+		A2E51277E00F3033DA22356A /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A037E0E7745CB09A0DF5BF3A /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		D7879C7F08755EA0D8EF593C /* HotKey */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2E1AFAAD40D2A8AA1DE220B3 /* XCRemoteSwiftPackageReference "HotKey" */;
+			productName = HotKey;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DBA3154E51E3A47D319FD2C9 /* Project object */;
 }

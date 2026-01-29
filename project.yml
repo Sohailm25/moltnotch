@@ -11,12 +11,27 @@ settings:
     SWIFT_VERSION: "5.0"
     ENABLE_HARDENED_RUNTIME: true
 
+packages:
+  HotKey:
+    url: https://github.com/soffes/HotKey
+    from: "0.2.1"
+  MarkdownUI:
+    url: https://github.com/gonzalezreal/swift-markdown-ui
+    from: "2.0.0"
+  TOMLDecoder:
+    url: https://github.com/dduan/TOMLDecoder
+    from: "0.2.2"
+
 targets:
   MoltNotch:
     type: application
     platform: macOS
     sources:
       - MoltNotch
+    dependencies:
+      - package: HotKey
+      - package: MarkdownUI
+      - package: TOMLDecoder
     settings:
       base:
         INFOPLIST_KEY_LSUIElement: true
@@ -55,6 +70,8 @@ targets:
     platform: macOS
     sources:
       - MoltNotchCLI
+    dependencies:
+      - package: TOMLDecoder
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.moltbot.MoltNotchCLI
