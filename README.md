@@ -121,6 +121,16 @@ moltnotch doctor    # checks config, TCP, WebSocket, SSH
 | "Config not found" | Run `moltnotch setup` |
 | Can't find the app | It's a menu bar app — look for ✦ in the top-right |
 
+## Agent-Assisted Setup
+
+Want an AI agent (Claude Code, Codex, OpenCode, etc.) to walk you through the entire setup interactively? Point it at the setup prompt:
+
+```
+Use the instructions in SETUP_AGENT_PROMPT.md to help me set up MoltNotch and MoltBot from scratch.
+```
+
+The prompt covers both MoltBot gateway and MoltNotch client setup, with verification at each stage. See [`SETUP_AGENT_PROMPT.md`](SETUP_AGENT_PROMPT.md).
+
 ## Building a Release DMG
 
 ```sh
