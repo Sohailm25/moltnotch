@@ -1,4 +1,4 @@
-# MoltNotch + MoltBot — Interactive Setup Guide
+# MoltNotch + MoltBot - Interactive Setup Guide
 
 You are helping a user set up **MoltNotch**, a macOS notch chat assistant that connects to a **MoltBot** (also known as **Clawdbot**) gateway. Follow this guide step by step, interactively confirming each stage with the user before proceeding.
 
